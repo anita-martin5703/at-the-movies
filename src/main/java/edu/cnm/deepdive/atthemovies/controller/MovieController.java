@@ -3,14 +3,19 @@ package edu.cnm.deepdive.atthemovies.controller;
 import edu.cnm.deepdive.atthemovies.model.dao.MovieRepository;
 import edu.cnm.deepdive.atthemovies.model.entity.Movie;
 import edu.cnm.deepdive.atthemovies.model.entity.Movie.Genre;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.ExposesResourceFor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("movies")
+@ExposesResourceFor(Movie.class)
 public class MovieController {
 
     private MovieRepository repository;
@@ -21,18 +26,26 @@ public class MovieController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    List<Movie> list(@RequestParam(value = "genre", required = false) Genre genre) {
+    public List<Movie> list(@RequestParam(value = "genre", required = false) Genre genre) {
         if (genre == null) {
             return repository.getAllByOrderByTitleAsc();
         } else {
             return repository.getAllByGenreOrderByTitleAsc(genre);
         }
-
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Movie post(@RequestBody Movie movie){
-        return repository.save(movie); //TODO Build a ResponseEntity.
+    public Movie post(@RequestBody Movie movie) {
+        return repository.save(movie); // TODO Build a ResponseEntity.
     }
+
+    @GetMapping(value = "{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public Movie get(@PathVariable("id") UUID id) {
+        return repository.findById(id).get();
+    }
+
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoSuchElementException.class)
+    public void notFound() {}
 }
