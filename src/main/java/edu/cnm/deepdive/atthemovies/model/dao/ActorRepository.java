@@ -8,7 +8,9 @@ import java.util.UUID;
 
 public interface ActorRepository extends CrudRepository<Actor, UUID> {
 
-//TODO Declare and required query methods.
-
     List<Actor> getAllByOrderByName();
+
+    List<Actor>getAllByNameContainsOrderByNameAsc(String nameFragment);
+
+
 }

@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 
 @Entity
 @Component
-@JsonIgnoreProperties(value = {"id", "created", "updated", "href"}, allowGetters = true,
+@JsonIgnoreProperties(value = {"created", "updated", "href"}, allowGetters = true,
         ignoreUnknown = true)
 public class Movie {
 
@@ -95,7 +95,7 @@ public class Movie {
     }
 
 
-    public URI getHrf() {
+    public URI getHref() {
         return entityLinks.linkForSingleResource(Movie.class, id).toUri();
     }
 
