@@ -9,18 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.PostConstruct;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 import edu.cnm.deepdive.atthemovies.view.FlatMovie;
 import org.hibernate.annotations.CreationTimestamp;
@@ -63,7 +52,8 @@ public class Movie implements FlatMovie {
 
     private String screenwriter;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "genre_id")
     private Genre genre;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "movies",
@@ -131,10 +121,6 @@ public class Movie implements FlatMovie {
     @Autowired
     private void setEntityLinks(EntityLinks entityLinks) {
         Movie.entityLinks = entityLinks;
-    }
-
-    public enum Genre {
-        ACTION, ROM_COM, HORROR, DOCUMENTARY, ANIME, SCI_FI, FANTASY
     }
 
 }
